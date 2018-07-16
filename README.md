@@ -7,7 +7,7 @@ while protecting the password with encryption and secret key.
 Features:
 - Add, create and delete url you access with http password.
 - Auto login with selenium.
-- Password and username protection with pycryto encryption with secret key.
+- Password and username protection encryption with secret key.
 - Change secret key and update all url username and password.
 
 Requirements:
