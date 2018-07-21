@@ -1,5 +1,6 @@
 #! ./venv/bin/python
 # A script to open url with http password.
+from __future__ import print_function
 import getpass
 import shelve
 import base64
@@ -23,15 +24,47 @@ def set_pass(label):
 
 def draw_table(data_urls):
     # draw table data url in ascii char
-    print '*' * 55
-    print '| Press | Label | Url'
-    for counter, data_url in enumerate(data_urls, 1):
-        print counter, '|', data_url['label'], '|', data_url['url']
-    print '*' * 55
-    print 'Other commands:'
-    print 'a: add url, r: set new secret key and update url password key'
-    print 'q: exit program, e: edit url, d: delete url'
-    print '*' * 55
+    headers = 'ID Label URL'.split()
+
+    # convert dict to list access in with index
+    list_urls = []
+    for index, data_url in enumerate(data_urls, 1):
+        list_urls.append([str(index), data_url['label'], data_url['url']])
+
+    # we check each header and content of data url to get the column width
+    column_width = [0, 0, 0]
+    for index, header in enumerate(headers):
+        # set the header as max len for this column
+        max_len = len(header)
+        # check each item is there's longer than header
+        for item in list_urls:
+            item_len = len(item[index])
+            if item_len > max_len:
+                max_len = item_len
+        # set the header column width
+        column_width[index] = max_len
+
+    # instructions
+    print('Commands:')
+    print('a: add url, r: set new secret key and update url password key')
+    print('q: exit program, e: edit url, d: delete url')
+
+    # draw the table with max column width
+    line_row = ''
+    contents = ''
+    for index, width in enumerate(column_width):
+        line_row += '+%s+' % ('-' * width)
+        contents += '|%s|' % headers[index].ljust(width)
+
+    print(line_row)
+    print(contents)
+    print(line_row)
+
+    for list_url in list_urls:
+        for index, url in enumerate(list_url):
+            print('|%s|' % url.ljust(column_width[index]), end='')
+        print() # new line
+        print(line_row)
 
 
 def open_to_brower(url, username, password):
@@ -86,7 +119,7 @@ def cancel_command(value):
 
 
 def add_url(secret_key, data_urls):
-    print 'Press c to cancel'
+    print('Press c to cancel')
     # add new url to list
     label = set_value('Enter label: ')
     if cancel_command(label):
@@ -137,7 +170,7 @@ def get_data_urls():
 
 def change_secret_key(old_secret_key, data_urls):
     # change secret key and update all your current username and password using new key
-    print 'Press c to cancel'
+    print('Press c to cancel')
 
     new_secret_key = set_pass('Enter your secret key: ')
     if cancel_command(new_secret_key):
@@ -159,7 +192,7 @@ def change_secret_key(old_secret_key, data_urls):
 
 def edit_url(secret_key, data_urls):
     # edit one url details
-    print 'Press c to cancel'
+    print('Press c to cancel')
 
     while True:
         url_index = set_value('Enter id of url to edit: ')
@@ -206,7 +239,7 @@ def edit_url(secret_key, data_urls):
 
 def delete_url(data_urls):
     # delete one url from list
-    print 'Press c to cancel'
+    print('Press c to cancel')
 
     while True:
         url_index = set_value('Enter id of url to delete: ')
@@ -248,7 +281,7 @@ def main():
             try:
                 data_url = data_urls[index]
             except IndexError:
-                print 'Invalid command.'
+                print('Invalid command.')
                 continue
 
             username = decrypt(data_url['username'], secret_key)
@@ -259,7 +292,7 @@ def main():
         elif selected == 'd':
             delete_url(data_urls)
         else:
-            print 'Invalid command.'
+            print('Invalid command.')
 
 
 if __name__ == '__main__':
