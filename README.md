@@ -4,6 +4,9 @@ Trying to keep url and http password in same domain is a hassle, most of the tim
 we forget the url and which http password is use. This script makes it manageable
 while protecting the password with encryption and secret key.
 
+This script is created because we do not want to use commercial software specially to
+store password.
+
 Features:
 - Add, create and delete url you access with http password.
 - Auto login with selenium.
